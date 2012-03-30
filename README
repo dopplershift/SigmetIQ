@@ -1,0 +1,6 @@
+Code to read SIGMET IQ radar data.
+
+This is *extremely* experimental, unsupported code, but it works for the
+data file I have. This code needs to be cleaned up to make a better library.
+Until I have time however, this will serve to ensure the code isn't lost,
+since it is useful.
