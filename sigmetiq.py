@@ -163,7 +163,6 @@ def convert_sigmet(data):
                 ranges.append(cur_rng)
             cur_rng += range_res
     
-    ndat['BinRanges'] = ranges
     sys_clock = float(data['fSyClkMHz']) * 1.0e6 #Get system clock in Hz
     max_power = pow(10.0, float(data['fSaturationDBM']) / 10.0) / 2 # dBm -> mW
     for pulse in data['pulse_data']:
@@ -187,6 +186,8 @@ def convert_sigmet(data):
         num_bins = int(pulse['iNumVecs'])
         ndat.setdefault('IQDataH', []).append(iq_comb[1:num_bins])
         ndat.setdefault('IQDataV', []).append(iq_comb[num_bins + 1:])
+    # Make sure the number of bin ranges matches the amount of data
+    ndat['BinRanges'] = ranges[-num_bins + 1:]
     
     return ndat
 
