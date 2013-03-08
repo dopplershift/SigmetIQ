@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import logging
-from ctypes import *
 from math import pow
 from itertools import izip
 
@@ -9,19 +8,25 @@ import numpy as N
 
 sigmet_log = logging
 
-_unpack_highsnr = cdll.LoadLibrary('./libsigmet_hsnr.so').unpack_highsnr
-_unpack_highsnr.argtypes = [POINTER(c_ushort), POINTER(c_float), c_int]
-_unpack_highsnr.restype = None
-
 class FileFormatError(Exception):
     pass
 
 def sigmet16_to_float(short_data):
-    float_data = N.empty(short_data.shape, dtype=N.float32)
-    _unpack_highsnr(short_data.ctypes.data_as(POINTER(c_ushort)),
-                    float_data.ctypes.data_as(POINTER(c_float)),
-                    short_data.size)
-    return float_data
+    return convLUT[short_data]
+
+def makeLUT():
+    shortData = N.arange(2**16, dtype=N.int32)
+    mask = (shortData & 0xF000) > 0
+    man = shortData[mask] & 0x7FF
+    exp = (shortData[mask] >> 12) & 0x00F
+    mask2 = (shortData[mask] & 0x0800) > 0
+    man[mask2] = man[mask2] | 0xFFFFF000
+    man[~mask2] = man[~mask2] | 0x00000800
+    convLUT[mask] = man.astype(N.float32) * (1 << exp) / 3.3554432E7
+    convLUT[~mask] = (shortData[~mask] << 20) / 1.759218603E13
+
+convLUT = N.zeros((2**16,), dtype=N.float32)
+makeLUT()
 
 def sigmet_to_netcdf(filename, data):
     nc = Dataset(filename, 'w')
