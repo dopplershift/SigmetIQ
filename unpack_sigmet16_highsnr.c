@@ -29,10 +29,10 @@ for(i = 0; i < len; i++)
 				else
 						iMan |= 0x00000800;
 				
-				*optr++ = (float)((float)iMan)*((float)(unsigned short)(1<<iExp))/3.355443E7;
+				*optr++ = (float)((float)iMan)*((float)(unsigned short)(1<<iExp))/3.3554432E7;
 				}
 		else					/* Exponent = 0  */
-				*optr++ = (float)((float)(((signed short)uintData) << 20)) / 1.759218E13;
+				*optr++ = (float)((float)(((signed short)uintData) << 20)) / 1.759218603E13;
 		}
 return;
 }
