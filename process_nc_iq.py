@@ -219,8 +219,8 @@ if __name__ == '__main__':
         filename = 'KOUNTS.20070629.021635.941.ELEVEN.1.H+V.300.nc'
     nc = Dataset(filename, 'r')
 
-    az = nc.variables['Azimuth'][ppi_start:]
-    el = nc.variables['Elevation'][ppi_start:]
+    az = nc.variables['Azimuth'][ppi_start:].copy()
+    el = nc.variables['Elevation'][ppi_start:].copy()
     ranges = nc.variables['Range'][:]
 
     Ts = nc.variables['PRT'][ppi_start:]
